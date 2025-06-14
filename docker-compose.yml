@@ -1,30 +1,11 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  redpanda:
-    image: docker.redpanda.com/redpandadata/redpanda:latest
-    container_name: redpanda
-    ports:
-      - "9092:9092"  # Kafka-compatible API
-      - "9644:9644"  # Redpanda HTTP admin API
-    command:
-      - redpanda
-      - start
-      - --smp 1
-      - --memory 512M
-      - --overprovisioned
-      - --node-id 0
-      - --check=false
-      - --kafka-addr PLAINTEXT://0.0.0.0:9092
-      - --advertise-kafka-addr PLAINTEXT://localhost:9092
-
-  mysql:
-    image: mysql:8.0
-    restart: always
+  etl:
+    build: .
+    container_name: etl_pipeline
+    volumes:
+      - .:/app
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: olympic_dataset
-      MYSQL_USER: neo_data_admin
-      MYSQL_PASSWORD: Proyahaxuqithab9oplp
-    ports:
-      - "3308:3306" 
+      - PREFECT_API_URL=http://host.docker.internal:4200/api
+    command: ["python", "project_solution.py"]

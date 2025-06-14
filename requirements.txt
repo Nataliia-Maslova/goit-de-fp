@@ -1,0 +1,4 @@
+pyspark==3.4.1
+requests
+prefect==2.18.1
+griffe==0.36.5
